@@ -13,6 +13,8 @@ const envSchema = z.object({
     .max(65535)
     .default(5000),
 
+    JWT_ACCESS_SECRET: z.string().min(64),
+
     MONGODB_URI: z.string().min(1),
 
     FRONTEND_URL: z.string().url()

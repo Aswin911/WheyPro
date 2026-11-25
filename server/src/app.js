@@ -10,6 +10,9 @@ import { registerDatabase } from "./plugins/database.js";
 import healthRoutes from "./routes/health.routes.js";
 import authRoutes from "./modules/auth/auth.routes.js";
 
+import jwt from "@fastify/jwt";
+import cookie from "@fastify/cookie";
+
 export function buildApp(options = {}) {
 
   const fastify = Fastify({
@@ -28,6 +31,27 @@ export function buildApp(options = {}) {
     max: 100,
     timeWindow: "1 minute"
   });
+
+  // JWT configuration
+  fastify.register(jwt, {
+  secret: env.JWT_ACCESS_SECRET,
+
+  sign: {
+    algorithm: "HS256",
+    expiresIn: "10m",
+    iss: "wheypro-api",
+    aud: "wheypro-client"
+  },
+
+  verify: {
+    algorithms: ["HS256"],
+    allowedIss: "wheypro-api",
+    allowedAud: "wheypro-client"
+  }
+});
+
+// Cookie support
+  fastify.register(cookie);
 
   // Register MongoDB and initialize indexes
   registerDatabase(fastify);
