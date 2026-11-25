@@ -2,6 +2,7 @@ import { registerSchema } from "./auth.schema.js";
 import { registerUser } from "./auth.service.js";
 
 import { rotateRefreshToken } from "./auth.service.js";
+import { revokeSession } from "./auth.service.js";
 
 import { loginSchema } from "./auth.schema.js";
 
@@ -227,6 +228,39 @@ export async function refreshController(request, reply) {
     return reply.code(500).send({
       success: false,
       message: "Unable to refresh session"
+    });
+  }
+}
+
+export async function logoutController(request, reply) {
+  const refreshToken = request.cookies.wheypro_refresh;
+
+  try {
+    if (refreshToken) {
+      await revokeSession(
+        request.server.mongo.db,
+        refreshToken
+      );
+    }
+
+    reply.clearCookie("wheypro_refresh", {
+      path: "/api/auth"
+    });
+
+    return reply.code(200).send({
+      success: true,
+      message: "Logout successful"
+    });
+
+  } catch (error) {
+    request.log.error(
+      { err: error },
+      "Logout failed"
+    );
+
+    return reply.code(500).send({
+      success: false,
+      message: "Unable to complete logout"
     });
   }
 }

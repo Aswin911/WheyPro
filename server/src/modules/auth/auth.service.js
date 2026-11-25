@@ -233,3 +233,21 @@ export async function rotateRefreshToken(db, oldToken) {
     }
   };
 }
+
+export async function revokeSession(db, refreshToken) {
+  const refreshTokenHash = hashRefreshToken(refreshToken);
+
+  const result = await db.collection("sessions").updateOne(
+    {
+      refreshTokenHash,
+      revokedAt: null
+    },
+    {
+      $set: {
+        revokedAt: new Date()
+      }
+    }
+  );
+
+  return result.modifiedCount === 1;
+}

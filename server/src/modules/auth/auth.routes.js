@@ -5,6 +5,7 @@ import {
 } from "./auth.controller.js";
 
 import { authenticate } from "./auth.middleware.js";
+import { logoutController } from "./auth.controller.js";
 
 async function authRoutes(fastify) {
 
@@ -62,6 +63,19 @@ async function authRoutes(fastify) {
     },
     refreshController
   );
+
+  fastify.post(
+    "/logout",
+    {
+      config:{
+        rateLimit:{
+          max:20,
+          timeWindow: "15 minutes"
+        }
+      }
+    },
+    logoutController
+  )
 }
 
 export default authRoutes;
