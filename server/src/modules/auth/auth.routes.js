@@ -11,7 +11,7 @@ import { authenticate,
         } from "./auth.middleware.js";
 
 import { logoutController } from "./auth.controller.js";
-import { config } from "dotenv";
+// import { config } from "dotenv";
 // import { success } from "zod";
 
 async function authRoutes(fastify) {
@@ -23,7 +23,7 @@ async function authRoutes(fastify) {
       preHandler: [verifyOrigin],
       config: {
         rateLimit: {
-          max: 20,
+          max: 5,
           timeWindow: "15 minutes"
         }
       }
@@ -91,24 +91,24 @@ async function authRoutes(fastify) {
   )
 
   // Temporary RBAC testing endpoint
-fastify.get(
-  "/admin-check",
-  {
-    preHandler: [
-      authenticate,
-      authorize("admin")
-    ]
-  },
-  async (request, reply) => {
+// fastify.get(
+//   "/admin-check",
+//   {
+//     preHandler: [
+//       authenticate,
+//       authorize("admin")
+//     ]
+//   },
+//   async (request, reply) => {
 
-    return reply.code(200).send({
-      success: true,
-      message: "Welcome, Admin!",
-      user: request.authUser
-    });
+//     return reply.code(200).send({
+//       success: true,
+//       message: "Welcome, Admin!",
+//       user: request.authUser
+//     });
 
-  }
-);
+//   }
+// );
 
 
 }
