@@ -6,8 +6,8 @@ export const products = [
     description: "Your everyday protein companion.",
     flavor: "Demo product",
     color: "#DCE9C9",
-    accent: "#789F35",
     number: "01",
+    image: "/images/products/Whey_product.png",
   },
   {
     id: "demo-2",
@@ -16,8 +16,8 @@ export const products = [
     description: "Nutrition for your training routine.",
     flavor: "Demo product",
     color: "#E8E2D8",
-    accent: "#987C56",
     number: "02",
+    image: "/images/products/Performance_product.png",
   },
   {
     id: "demo-3",
@@ -26,7 +26,7 @@ export const products = [
     description: "Explore your everyday nutrition.",
     flavor: "Demo product",
     color: "#DCE5E8",
-    accent: "#64848E",
     number: "03",
+    image: "/images/products/Daily_nutrition.png",
   },
 ];
