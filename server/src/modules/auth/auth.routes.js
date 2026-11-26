@@ -6,7 +6,7 @@ import {
 
 import { authenticate,authorize } from "./auth.middleware.js";
 import { logoutController } from "./auth.controller.js";
-import { success } from "zod";
+// import { success } from "zod";
 
 async function authRoutes(fastify) {
 
