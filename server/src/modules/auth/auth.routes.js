@@ -4,8 +4,9 @@ import {
   refreshController
 } from "./auth.controller.js";
 
-import { authenticate } from "./auth.middleware.js";
+import { authenticate,authorize } from "./auth.middleware.js";
 import { logoutController } from "./auth.controller.js";
+import { success } from "zod";
 
 async function authRoutes(fastify) {
 
@@ -76,6 +77,26 @@ async function authRoutes(fastify) {
     },
     logoutController
   )
+
+  // Temporary RBAC testing endpoint
+fastify.get(
+  "/admin-check",
+  {
+    preHandler: [
+      authenticate,
+      authorize("admin")
+    ]
+  },
+  async (request, reply) => {
+
+    return reply.code(200).send({
+      success: true,
+      message: "Welcome, Admin!",
+      user: request.authUser
+    });
+
+  }
+);
 }
 
 export default authRoutes;

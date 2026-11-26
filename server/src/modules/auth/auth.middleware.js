@@ -69,3 +69,27 @@ export async function authenticate(request, reply) {
     });
   }
 }
+
+export function authorize(...allowedRoles) {
+
+  return async function (request, reply) {
+
+    // Ensure authentication middleware ran first
+    if (!request.authUser) {
+      return reply.code(401).send({
+        success: false,
+        message: "Authentication required"
+      });
+    }
+
+    // Check whether the user's role is permitted
+    if (!allowedRoles.includes(request.authUser.role)) {
+      return reply.code(403).send({
+        success: false,
+        message: "You do not have permission to access this resource"
+      });
+    }
+
+  };
+
+}
