@@ -1,3 +1,5 @@
+import { env } from "../../config/env.js";
+
 export async function authenticate(request, reply) {
   // Step 1: Verify the JWT
   try {
@@ -91,5 +93,25 @@ export function authorize(...allowedRoles) {
     }
 
   };
+}
 
+export async function verifyOrigin(request, reply) {
+
+  const origin = request.headers.origin;
+
+  // Reject requests without an Origin header
+  if (!origin) {
+    return reply.code(403).send({
+      success: false,
+      message: "Request origin is required"
+    });
+  }
+
+  // Allow only the configured frontend
+  if (origin !== env.FRONTEND_URL) {
+    return reply.code(403).send({
+      success: false,
+      message: "Request origin is not allowed"
+    });
+  }
 }

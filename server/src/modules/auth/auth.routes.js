@@ -4,8 +4,12 @@ import {
   refreshController
 } from "./auth.controller.js";
 
-import { authenticate,authorize } from "./auth.middleware.js";
+import { authenticate,
+          authorize,
+          verifyOrigin
+        } from "./auth.middleware.js";
 import { logoutController } from "./auth.controller.js";
+import { config } from "dotenv";
 // import { success } from "zod";
 
 async function authRoutes(fastify) {
@@ -14,9 +18,10 @@ async function authRoutes(fastify) {
   fastify.post(
     "/register",
     {
+      preHandler: [verifyOrigin],
       config: {
         rateLimit: {
-          max: 5,
+          max: 20,
           timeWindow: "15 minutes"
         }
       }
@@ -28,6 +33,7 @@ async function authRoutes(fastify) {
   fastify.post(
     "/login",
     {
+      preHandler: [verifyOrigin],
       config: {
         rateLimit: {
           max: 5,
@@ -55,6 +61,7 @@ async function authRoutes(fastify) {
   fastify.post(
     "/refresh",
     {
+      preHandler: [verifyOrigin],
       config:{
         rateLimit:{
           max:20,
@@ -97,6 +104,8 @@ fastify.get(
 
   }
 );
+
+
 }
 
 export default authRoutes;
