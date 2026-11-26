@@ -6,8 +6,10 @@ import {
 
 import { authenticate,
           authorize,
-          verifyOrigin
+          verifyOrigin,
+          verifyCsrf
         } from "./auth.middleware.js";
+
 import { logoutController } from "./auth.controller.js";
 import { config } from "dotenv";
 // import { success } from "zod";
@@ -58,10 +60,11 @@ async function authRoutes(fastify) {
   }
 );
 
+  //Refresh
   fastify.post(
     "/refresh",
     {
-      preHandler: [verifyOrigin],
+      preHandler: [verifyOrigin,verifyCsrf],
       config:{
         rateLimit:{
           max:20,
@@ -72,9 +75,11 @@ async function authRoutes(fastify) {
     refreshController
   );
 
+  //lOGOUT
   fastify.post(
     "/logout",
     {
+      preHandler: [verifyOrigin, verifyCsrf],
       config:{
         rateLimit:{
           max:20,

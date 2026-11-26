@@ -15,6 +15,8 @@ const envSchema = z.object({
 
     JWT_ACCESS_SECRET: z.string().min(64),
 
+    CSRF_SECRET: z.string().min(64),
+
     MONGODB_URI: z.string().min(1),
 
     FRONTEND_URL: z.string().url()

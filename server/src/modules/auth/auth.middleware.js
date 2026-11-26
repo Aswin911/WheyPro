@@ -1,5 +1,12 @@
 import { env } from "../../config/env.js";
 
+import {
+  verifyCsrfToken,
+  safeTokenEqual
+} from "./auth.csrf.js";
+
+import { hashRefreshToken } from "./auth.service.js";
+
 export async function authenticate(request, reply) {
   // Step 1: Verify the JWT
   try {
@@ -113,5 +120,75 @@ export async function verifyOrigin(request, reply) {
       success: false,
       message: "Request origin is not allowed"
     });
+  }
+}
+
+
+export async function verifyCsrf(request, reply) {
+
+  // Step 1: Read the cookies and custom request header
+  const refreshToken = request.cookies.wheypro_refresh;
+  const csrfCookie = request.cookies.wheypro_csrf;
+  const csrfHeader = request.headers["x-csrf-token"];
+
+  // Step 2: Ensure all required values exist
+  if (!refreshToken || !csrfCookie || !csrfHeader) {
+    return reply.code(403).send({
+      success: false,
+      message: "CSRF token is missing"
+    });
+  }
+
+  // Step 3: Check whether the cookie and header match
+  if (!safeTokenEqual(csrfCookie, csrfHeader)) {
+    return reply.code(403).send({
+      success: false,
+      message: "Invalid CSRF token"
+    });
+  }
+
+  try {
+
+    const db = request.server.mongo.db;
+
+    // Step 4: Find the active session using the refresh token hash
+    const session = await db.collection("sessions").findOne({
+      refreshTokenHash: hashRefreshToken(refreshToken),
+      revokedAt: null,
+      expiresAt: { $gt: new Date() }
+    });
+
+    if (!session) {
+      return reply.code(403).send({
+        success: false,
+        message: "Invalid or expired session"
+      });
+    }
+
+    // Step 5: Verify the CSRF signature against this session
+    const isValid = verifyCsrfToken(
+      csrfCookie,
+      session._id.toString()
+    );
+
+    if (!isValid) {
+      return reply.code(403).send({
+        success: false,
+        message: "Invalid CSRF token"
+      });
+    }
+
+  } catch (error) {
+
+    request.log.error(
+      { err: error },
+      "CSRF verification failed"
+    );
+
+    return reply.code(503).send({
+      success: false,
+      message: "Security verification temporarily unavailable"
+    });
+
   }
 }

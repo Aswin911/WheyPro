@@ -6,6 +6,8 @@ import { revokeSession } from "./auth.service.js";
 
 import { loginSchema } from "./auth.schema.js";
 
+import { generateCsrfToken } from "./auth.csrf.js";
+
 import {
   authenticateUser,
   createSession
@@ -136,7 +138,19 @@ export async function loginController(request, reply) {
       }
     );
 
-    // 6. Return safe user information
+    // 6. Generate a CSRF token bound to this session
+    const csrfToken = generateCsrfToken(session.sessionId);
+
+    // 7. Set the CSRF cookie
+    reply.setCookie("wheypro_csrf", csrfToken, {
+      httpOnly: false,
+      secure: env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 7 * 24 * 60 * 60
+    });
+
+    // 8. Return safe user information
     return reply.code(200).send({
 
       success: true,
@@ -212,6 +226,18 @@ export async function refreshController(request, reply) {
       maxAge: 7 * 24 * 60 * 60
     });
 
+    // Generate a fresh CSRF token for the same session
+    const csrfToken = generateCsrfToken(result.sessionId);
+
+    // Set the new CSRF cookie
+    reply.setCookie("wheypro_csrf", csrfToken, {
+      httpOnly: false,
+      secure: env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 7 * 24 * 60 * 60
+    });
+
     return reply.code(200).send({
       success: true,
       message: "Token refreshed successfully",
@@ -245,6 +271,10 @@ export async function logoutController(request, reply) {
 
     reply.clearCookie("wheypro_refresh", {
       path: "/api/auth"
+    });
+
+    reply.clearCookie("wheypro_csrf", {
+    path: "/"
     });
 
     return reply.code(200).send({
