@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
 import {
@@ -9,6 +9,8 @@ import {
   Zap,
   LogOut,
   UserRound,
+  Sun,
+  Moon,
 } from "lucide-react";
 
 import { useAuth } from "@/context/AuthContext";
@@ -23,8 +25,25 @@ const navLinks = [
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  const [theme, setTheme] = useState(() => {
+    const savedTheme = localStorage.getItem("wheypro-theme");
+    return savedTheme === "dark" ? "dark" : "light";
+  });
+
   const { user, status, logout } = useAuth();
   const navigate = useNavigate();
+
+  // Apply and persist the selected theme.
+  useEffect(() => {
+    const root = document.documentElement;
+
+    root.classList.toggle("dark", theme === "dark");
+    localStorage.setItem("wheypro-theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((current) => (current === "light" ? "dark" : "light"));
+  };
 
   const closeMobileMenu = () => setMobileOpen(false);
 
@@ -37,6 +56,25 @@ export default function Navbar() {
       console.error("Logout request failed:", error);
     }
   };
+
+  // Reusable theme toggle for desktop and mobile.
+  const ThemeToggle = ({ mobile = false }) => (
+    <button
+      type="button"
+      onClick={toggleTheme}
+      aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+      title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+      className={`flex items-center justify-center rounded-full border border-border transition-all duration-300 hover:bg-secondary ${
+        mobile ? "size-11 rounded-xl" : "size-10"
+      }`}
+    >
+      {theme === "dark" ? (
+        <Sun className="size-[18px] text-primary" />
+      ) : (
+        <Moon className="size-[18px]" />
+      )}
+    </button>
+  );
 
   const AuthActions = ({ mobile = false }) => {
     if (status === "loading") {
@@ -56,7 +94,7 @@ export default function Navbar() {
             }`}
           >
             <UserRound className="size-4" />
-            {user.username}
+            {user.username.replace(/user$/, "")}
           </span>
 
           <button
@@ -139,7 +177,8 @@ export default function Navbar() {
           </div>
 
           {/* Desktop Actions */}
-          <div className="hidden items-center gap-5 md:flex">
+          <div className="hidden items-center gap-4 md:flex">
+            <ThemeToggle />
             <AuthActions />
           </div>
 
@@ -194,7 +233,16 @@ export default function Navbar() {
               </div>
 
               <div className="mt-5 flex flex-col gap-3 border-t border-border pt-5">
-                <AuthActions mobile />
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-muted-foreground">
+                    Appearance
+                  </span>
+                  <ThemeToggle mobile />
+                </div>
+
+                <div className="flex flex-col gap-3">
+                  <AuthActions mobile />
+                </div>
               </div>
             </motion.div>
           </>

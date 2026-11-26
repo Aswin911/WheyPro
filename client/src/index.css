@@ -159,9 +159,22 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+
 @layer base {
-  * {
+  *,
+  *::before,
+  *::after {
     @apply border-border outline-ring/50;
+
+    transition-property:
+      color,
+      background-color,
+      border-color,
+      text-decoration-color,
+      fill,
+      stroke;
+    transition-duration: 200ms;
+    transition-timing-function: ease;
   }
 
   html {
@@ -200,6 +213,7 @@
     color: #151515;
   }
 }
+
 
 @media (prefers-reduced-motion: reduce) {
   *,
