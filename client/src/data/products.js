@@ -1,0 +1,32 @@
+export const products = [
+  {
+    id: "demo-1",
+    name: "Whey Protein",
+    category: "PROTEIN",
+    description: "Your everyday protein companion.",
+    flavor: "Demo product",
+    color: "#DCE9C9",
+    accent: "#789F35",
+    number: "01",
+  },
+  {
+    id: "demo-2",
+    name: "Performance Series",
+    category: "PERFORMANCE",
+    description: "Nutrition for your training routine.",
+    flavor: "Demo product",
+    color: "#E8E2D8",
+    accent: "#987C56",
+    number: "02",
+  },
+  {
+    id: "demo-3",
+    name: "Daily Essentials",
+    category: "NUTRITION",
+    description: "Explore your everyday nutrition.",
+    flavor: "Demo product",
+    color: "#DCE5E8",
+    accent: "#64848E",
+    number: "03",
+  },
+];
