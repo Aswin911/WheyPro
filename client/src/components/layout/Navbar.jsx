@@ -1,13 +1,17 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
 import {
   Menu,
   X,
   ArrowUpRight,
   Zap,
+  LogOut,
+  UserRound,
 } from "lucide-react";
+
+import { useAuth } from "@/context/AuthContext";
 
 const navLinks = [
   { label: "Home", href: "#home" },
@@ -19,7 +23,83 @@ const navLinks = [
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  const { user, status, logout } = useAuth();
+  const navigate = useNavigate();
+
   const closeMobileMenu = () => setMobileOpen(false);
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      closeMobileMenu();
+      navigate("/login", { replace: true });
+    } catch (error) {
+      console.error("Logout request failed:", error);
+    }
+  };
+
+  const AuthActions = ({ mobile = false }) => {
+    if (status === "loading") {
+      return (
+        <span className="text-sm text-muted-foreground">
+          Loading...
+        </span>
+      );
+    }
+
+    if (user) {
+      return (
+        <>
+          <span
+            className={`flex items-center gap-2 text-sm font-semibold text-foreground ${
+              mobile ? "justify-center py-2" : ""
+            }`}
+          >
+            <UserRound className="size-4" />
+            {user.username}
+          </span>
+
+          <button
+            type="button"
+            onClick={handleLogout}
+            className={`flex items-center justify-center gap-2 rounded-full border border-border px-5 py-3 text-sm font-semibold transition hover:bg-secondary ${
+              mobile ? "w-full rounded-xl" : ""
+            }`}
+          >
+            <LogOut className="size-4" />
+            Logout
+          </button>
+        </>
+      );
+    }
+
+    return (
+      <>
+        <Link
+          to="/login"
+          onClick={mobile ? closeMobileMenu : undefined}
+          className={`text-sm font-semibold text-foreground transition-colors hover:text-muted-foreground ${
+            mobile
+              ? "rounded-xl border border-border px-4 py-3 text-center"
+              : ""
+          }`}
+        >
+          Login
+        </Link>
+
+        <Link
+          to="/register"
+          onClick={mobile ? closeMobileMenu : undefined}
+          className={`group inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-bold text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#b6e653] hover:shadow-lg hover:shadow-primary/20 ${
+            mobile ? "w-full rounded-xl" : ""
+          }`}
+        >
+          Get Started
+          <ArrowUpRight className="size-4 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+        </Link>
+      </>
+    );
+  };
 
   return (
     <>
@@ -60,20 +140,7 @@ export default function Navbar() {
 
           {/* Desktop Actions */}
           <div className="hidden items-center gap-5 md:flex">
-            <Link
-              to="/login"
-              className="text-sm font-semibold text-foreground transition-colors hover:text-muted-foreground"
-            >
-              Login
-            </Link>
-
-            <Link
-              to="/register"
-              className="group inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-bold text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#b6e653] hover:shadow-lg hover:shadow-primary/20"
-            >
-              Get Started
-              <ArrowUpRight className="size-4 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-            </Link>
+            <AuthActions />
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -127,22 +194,7 @@ export default function Navbar() {
               </div>
 
               <div className="mt-5 flex flex-col gap-3 border-t border-border pt-5">
-                <Link
-                  to="/login"
-                  onClick={closeMobileMenu}
-                  className="rounded-xl border border-border px-4 py-3 text-center text-sm font-semibold"
-                >
-                  Login
-                </Link>
-
-                <Link
-                  to="/register"
-                  onClick={closeMobileMenu}
-                  className="flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3.5 text-sm font-bold text-primary-foreground"
-                >
-                  Get Started
-                  <ArrowUpRight className="size-4" />
-                </Link>
+                <AuthActions mobile />
               </div>
             </motion.div>
           </>

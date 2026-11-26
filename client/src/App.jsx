@@ -10,6 +10,12 @@ import FeaturedProducts from "@/components/landing/FeaturedProducts";
 import BrandStory from "@/components/landing/BrandStory";
 import FinalCTA from "@/components/landing/FinalCTA";
 
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
+import GuestRoute from "@/components/auth/GuestRoute";
+import Register from "@/pages/Register";
+import Login from "@/pages/Login";
+import { AuthProvider } from "@/context/AuthContext";
+
 function Home() {
   return (
     <>
@@ -21,20 +27,6 @@ function Home() {
         <BrandStory />
         <FinalCTA />
 
-        <section
-          id="products"
-          className="min-h-96 scroll-mt-24"
-        />
-
-        <section
-          id="about"
-          className="min-h-96 scroll-mt-24"
-        />
-
-        <section
-          id="contact"
-          className="min-h-96 scroll-mt-24"
-        />
       </main>
       <Footer />
     </>
@@ -44,9 +36,23 @@ function Home() {
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-      </Routes>
+      <AuthProvider>
+        <Routes>
+          {/* Public landing page */}
+          <Route path="/" element={<Home />} />
+
+          {/* Guest-only pages */}
+          <Route element={<GuestRoute />}>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+          </Route>
+
+          {/* Protected pages */}
+          <Route element={<ProtectedRoute />}>
+            {/* We'll add the user dashboard here */}
+          </Route>
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   );
 }

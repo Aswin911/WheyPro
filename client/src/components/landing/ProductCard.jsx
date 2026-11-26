@@ -19,19 +19,19 @@ export default function ProductCard({ product, index }) {
         className="relative h-[340px] overflow-hidden"
         style={{ backgroundColor: product.color }}
       >
-        <span className="absolute left-6 top-6 z-10 text-xs font-bold tracking-[0.2em] text-[#555]">
-          {product.category}
+        <span className="absolute left-5 top-5 z-10 rounded-full border border-black/5 bg-white/90 px-4 py-2 text-[10px] font-bold tracking-[0.18em] text-[#151515] shadow-sm backdrop-blur-sm">
+            {product.category}
         </span>
 
-        <span className="absolute right-6 top-6 z-10 text-sm font-semibold text-[#777]">
-          {product.number}
+        <span className="absolute right-5 top-5 z-10 flex size-9 items-center justify-center rounded-full border border-black/5 bg-white/90 text-xs font-bold text-[#151515] shadow-sm backdrop-blur-sm">
+            {product.number}
         </span>
 
         <img
           src={product.image}
           alt={product.name}
           loading="lazy"
-          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+          className="h-full w-full object-cover transform-gpu transition-transform duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04] will-change-transform"
         />
 
         <div className="absolute bottom-5 left-5 rounded-full border border-black/10 bg-white/80 px-3 py-2 text-[10px] font-semibold text-[#555] backdrop-blur">
