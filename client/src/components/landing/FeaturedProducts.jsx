@@ -8,7 +8,7 @@ export default function FeaturedProducts() {
   return (
     <section
       id="products"
-      className="scroll-mt-20 bg-[#F0F0EB] px-5 py-24 sm:px-8 lg:px-12 lg:py-32"
+      className="scroll-mt-20 bg-[#F0F0EB] px-5 py-24 dark:bg-background sm:px-8 lg:px-12 lg:py-32"
     >
       <div className="mx-auto max-w-7xl">
 

@@ -12,20 +12,20 @@ export default function ProductCard({ product, index }) {
         duration: 0.6,
         delay: index * 0.12,
       }}
-      className="group overflow-hidden rounded-[1.75rem] border border-border bg-white"
+      className="group overflow-hidden rounded-[1.75rem] border border-border bg-card transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-xl hover:shadow-black/10 dark:hover:shadow-black/30"
     >
       {/* Product image */}
       <div
         className="relative h-[340px] overflow-hidden"
         style={{ backgroundColor: product.color }}
       >
-        <span className="absolute left-5 top-5 z-10 rounded-full border border-black/5 bg-white/90 px-4 py-2 text-[10px] font-bold tracking-[0.18em] text-[#151515] shadow-sm backdrop-blur-sm">
+        <span className="absolute left-5 top-5 z-10 rounded-full border border-black/5 bg-white/90 px-3 py-1 text-[10px] font-bold tracking-[0.18em] text-[#151515] shadow-sm backdrop-blur-sm">
             {product.category}
         </span>
 
-        <span className="absolute right-5 top-5 z-10 flex size-9 items-center justify-center rounded-full border border-black/5 bg-white/90 text-xs font-bold text-[#151515] shadow-sm backdrop-blur-sm">
+        {/* <span className="absolute right-5 top-5 z-10 flex size-9 items-center justify-center rounded-full border border-black/5 bg-white/90 text-xs font-bold text-[#151515] shadow-sm backdrop-blur-sm">
             {product.number}
-        </span>
+        </span> */}
 
         <img
           src={product.image}

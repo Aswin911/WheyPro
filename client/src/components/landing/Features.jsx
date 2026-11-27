@@ -103,12 +103,11 @@ export default function Features() {
                 key={feature.number}
                 variants={cardVariants}
                 whileHover={{ y: -7 }}
-                className="group relative flex min-h-[300px] flex-col justify-between overflow-hidden rounded-[1.75rem] border border-border bg-[#F0F0EB] p-7 transition-shadow duration-300 hover:shadow-xl hover:shadow-black/5 sm:p-9"
+                className="group relative flex min-h-[300px] flex-col justify-between overflow-hidden rounded-[1.75rem] border border-border bg-card p-7 transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-xl hover:shadow-black/10 dark:hover:shadow-black/30 sm:p-9"
               >
                 <div className="flex items-start justify-between">
-                  <div className="flex size-14 items-center justify-center rounded-2xl bg-[#DFF0BE] transition-transform duration-300 group-hover:rotate-6">
-                    <Icon className="size-7 text-[#536F29]" />
-                  </div>
+                  <div className="flex size-14 items-center justify-center rounded-2xl bg-primary/15 transition-all duration-300 group-hover:rotate-6 group-hover:bg-primary/25">
+                    <Icon className="size-7 text-primary" />                  </div>
 
                   <span className="text-sm font-semibold text-muted-foreground/60">
                     {feature.number}
