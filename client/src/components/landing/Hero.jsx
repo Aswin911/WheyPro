@@ -60,12 +60,12 @@ export default function Hero() {
           animate="visible"
           className="relative z-10"
         >
-          <motion.div variants={itemVariants}>
+          {/* <motion.div variants={itemVariants}>
             <span className="inline-flex items-center gap-2 rounded-full border border-[#DCE7C9] bg-[#EEF5E4] px-4 py-2 text-xs font-bold uppercase tracking-wider text-[#536B35]">
               <span className="size-2 rounded-full bg-[#91B83F]" />
               Nutrition meets performance
             </span>
-          </motion.div>
+          </motion.div> */}
 
           <motion.h1
             variants={itemVariants}
