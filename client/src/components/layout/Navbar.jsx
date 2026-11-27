@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
@@ -13,7 +12,7 @@ import {
   Moon,
 } from "lucide-react";
 
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/useAuth";
 
 const navLinks = [
   { label: "Home", href: "#home" },
@@ -21,6 +20,95 @@ const navLinks = [
   { label: "About", href: "#about" },
   { label: "Contact", href: "#contact" },
 ];
+
+function ThemeToggle({ mobile = false, theme, onToggle }) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+      title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+      className={`flex items-center justify-center rounded-full border border-border transition-all duration-300 hover:bg-secondary ${
+        mobile ? "size-11 rounded-xl" : "size-10"
+      }`}
+    >
+      {theme === "dark" ? (
+        <Sun className="size-[18px] text-primary" />
+      ) : (
+        <Moon className="size-[18px]" />
+      )}
+    </button>
+  );
+}
+
+function AuthActions({
+  mobile = false,
+  status,
+  user,
+  onLogout,
+  onCloseMobileMenu,
+}) {
+  if (status === "loading") {
+    return (
+      <span className="text-sm text-muted-foreground">
+        Loading...
+      </span>
+    );
+  }
+
+  if (user) {
+    return (
+      <>
+        <span
+          className={`flex items-center gap-2 text-sm font-semibold text-foreground ${
+            mobile ? "justify-center py-2" : ""
+          }`}
+        >
+          <UserRound className="size-4" />
+          {user.username.replace(/user$/, "")}
+        </span>
+
+        <button
+          type="button"
+          onClick={onLogout}
+          className={`flex items-center justify-center gap-2 rounded-full border border-border px-5 py-3 text-sm font-semibold transition hover:bg-secondary ${
+            mobile ? "w-full rounded-xl" : ""
+          }`}
+        >
+          <LogOut className="size-4" />
+          Logout
+        </button>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <Link
+        to="/login"
+        onClick={mobile ? onCloseMobileMenu : undefined}
+        className={`text-sm font-semibold text-foreground transition-colors hover:text-muted-foreground ${
+          mobile
+            ? "rounded-xl border border-border px-4 py-3 text-center"
+            : ""
+        }`}
+      >
+        Login
+      </Link>
+
+      <Link
+        to="/register"
+        onClick={mobile ? onCloseMobileMenu : undefined}
+        className={`group inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-bold text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#b6e653] hover:shadow-lg hover:shadow-primary/20 ${
+          mobile ? "w-full rounded-xl" : ""
+        }`}
+      >
+        Get Started
+        <ArrowUpRight className="size-4 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+      </Link>
+    </>
+  );
+}
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -55,88 +143,6 @@ export default function Navbar() {
     } catch (error) {
       console.error("Logout request failed:", error);
     }
-  };
-
-  // Reusable theme toggle for desktop and mobile.
-  const ThemeToggle = ({ mobile = false }) => (
-    <button
-      type="button"
-      onClick={toggleTheme}
-      aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-      title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-      className={`flex items-center justify-center rounded-full border border-border transition-all duration-300 hover:bg-secondary ${
-        mobile ? "size-11 rounded-xl" : "size-10"
-      }`}
-    >
-      {theme === "dark" ? (
-        <Sun className="size-[18px] text-primary" />
-      ) : (
-        <Moon className="size-[18px]" />
-      )}
-    </button>
-  );
-
-  const AuthActions = ({ mobile = false }) => {
-    if (status === "loading") {
-      return (
-        <span className="text-sm text-muted-foreground">
-          Loading...
-        </span>
-      );
-    }
-
-    if (user) {
-      return (
-        <>
-          <span
-            className={`flex items-center gap-2 text-sm font-semibold text-foreground ${
-              mobile ? "justify-center py-2" : ""
-            }`}
-          >
-            <UserRound className="size-4" />
-            {user.username.replace(/user$/, "")}
-          </span>
-
-          <button
-            type="button"
-            onClick={handleLogout}
-            className={`flex items-center justify-center gap-2 rounded-full border border-border px-5 py-3 text-sm font-semibold transition hover:bg-secondary ${
-              mobile ? "w-full rounded-xl" : ""
-            }`}
-          >
-            <LogOut className="size-4" />
-            Logout
-          </button>
-        </>
-      );
-    }
-
-    return (
-      <>
-        <Link
-          to="/login"
-          onClick={mobile ? closeMobileMenu : undefined}
-          className={`text-sm font-semibold text-foreground transition-colors hover:text-muted-foreground ${
-            mobile
-              ? "rounded-xl border border-border px-4 py-3 text-center"
-              : ""
-          }`}
-        >
-          Login
-        </Link>
-
-        <Link
-          to="/register"
-          onClick={mobile ? closeMobileMenu : undefined}
-          className={`group inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-bold text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#b6e653] hover:shadow-lg hover:shadow-primary/20 ${
-            mobile ? "w-full rounded-xl" : ""
-          }`}
-        >
-          Get Started
-          <ArrowUpRight className="size-4 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-        </Link>
-      </>
-    );
   };
 
   return (
@@ -178,8 +184,17 @@ export default function Navbar() {
 
           {/* Desktop Actions */}
           <div className="hidden items-center gap-4 md:flex">
-            <ThemeToggle />
-            <AuthActions />
+            <ThemeToggle
+              theme={theme}
+              onToggle={toggleTheme}
+            />
+
+            <AuthActions
+              status={status}
+              user={user}
+              onLogout={handleLogout}
+              onCloseMobileMenu={closeMobileMenu}
+            />
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -237,11 +252,22 @@ export default function Navbar() {
                   <span className="text-sm font-medium text-muted-foreground">
                     Appearance
                   </span>
-                  <ThemeToggle mobile />
+
+                  <ThemeToggle
+                    mobile
+                    theme={theme}
+                    onToggle={toggleTheme}
+                  />
                 </div>
 
                 <div className="flex flex-col gap-3">
-                  <AuthActions mobile />
+                  <AuthActions
+                    mobile
+                    status={status}
+                    user={user}
+                    onLogout={handleLogout}
+                    onCloseMobileMenu={closeMobileMenu}
+                  />
                 </div>
               </div>
             </motion.div>
