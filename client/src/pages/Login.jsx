@@ -58,7 +58,8 @@ export default function Login() {
       });
 
       login(data);
-      navigate("/", { replace: true });
+      const from = location.state?.from?.pathname || "/account";
+      navigate(from, { replace: true });
     } catch (err) {
       const status = err.response?.status;
 
